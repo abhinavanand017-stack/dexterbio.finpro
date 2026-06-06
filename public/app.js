@@ -2840,11 +2840,48 @@ function initTrackerModule() {
   const tbody = document.getElementById('tracker-tbody');
   const tickerInput = document.getElementById('tracker-ticker');
   const typeSelect = document.getElementById('tracker-type');
+  const datalist = document.getElementById('tracker-ticker-list');
+  const msgEl = document.getElementById('tracker-add-msg');
 
   if (!addBtn || !snapshotBtn || !tbody) return;
 
+  // Build autocomplete list from real NIFTY 500 symbols
+  if (datalist && typeof MARKET_DIRECTORY !== 'undefined') {
+    datalist.innerHTML = MARKET_DIRECTORY.map(s =>
+      `<option value="${s.sym}">${s.sym} — ₹${s.price.toFixed(2)}</option>`).join('');
+  }
+
+  function showMsg(text, ok) {
+    if (!msgEl) return;
+    msgEl.textContent = text;
+    msgEl.style.color = ok ? 'var(--green)' : 'var(--red)';
+    setTimeout(() => { if (msgEl.textContent === text) msgEl.textContent = ''; }, 4000);
+  }
+
+  // Seed 7-day history with a plausible walk anchored to actual price
+  function seedHistory(price, type) {
+    const vol = type === 'MF' ? 0.008 : 0.018;
+    const points = [];
+    // Start from 7 days back, drift toward today's price
+    let p = price * (1 + (Math.random() - 0.5) * 0.06);
+    for (let i = 6; i >= 0; i--) {
+      const drift = (price - p) * 0.18;
+      const step = (Math.random() - 0.5) * vol * p + drift;
+      p = p + step;
+      const d = new Date(); d.setDate(d.getDate() - i);
+      points.push({ date: d.toISOString(), price: +p.toFixed(2) });
+    }
+    // Pin last point to actual current price
+    points[points.length - 1].price = +price.toFixed(2);
+    return points;
+  }
+
   function renderTracker() {
     tbody.innerHTML = '';
+    if (trackerData.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 32px; color: var(--text-dim); font-size: 13px;">No assets tracked yet. Search for a NIFTY 500 symbol above to begin.</td></tr>';
+      return;
+    }
     trackerData.forEach((asset, index) => {
       const history = asset.history || [];
       const currentPrice = history.length > 0 ? history[history.length - 1].price : 0;
@@ -2868,7 +2905,10 @@ function initTrackerModule() {
       const sparklineColor = change >= 0 ? '#00D4FF' : '#FF6B35';
 
       tr.innerHTML = `
-        <td style="font-weight: 600;">${asset.ticker}</td>
+        <td>
+          <div style="font-weight: 600;">${asset.ticker}</div>
+          ${asset.name && asset.name !== asset.ticker ? `<div style="font-size:11px;color:var(--text-dim);">${asset.name}</div>` : ''}
+        </td>
         <td style="color: var(--text-secondary); font-size: 11px;">${asset.type}</td>
         <td style="font-family: var(--font-mono);">₹${currentPrice.toFixed(2)}</td>
         <td class="${change >= 0 ? 'positive' : 'negative'}" style="font-family: var(--font-mono);">
@@ -2879,8 +2919,9 @@ function initTrackerModule() {
             <path d="${pathD}" fill="none" stroke="${sparklineColor}" stroke-width="2" vector-effect="non-scaling-stroke" />
           </svg>
         </td>
-        <td>
-          <button class="delete-asset-btn" data-idx="${index}" style="background: transparent; border: none; color: #ff4a4a; cursor: pointer; font-size: 14px;">✕</button>
+        <td style="white-space:nowrap;">
+          <button class="research-asset-btn" data-sym="${asset.ticker}" title="Open research" style="background: transparent; border: 1px solid var(--border); color: var(--violet-l); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-right: 4px;">🔬</button>
+          <button class="delete-asset-btn" data-idx="${index}" title="Remove" style="background: transparent; border: none; color: #ff4a4a; cursor: pointer; font-size: 14px;">✕</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -2888,10 +2929,25 @@ function initTrackerModule() {
 
     document.querySelectorAll('.delete-asset-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const idx = e.target.getAttribute('data-idx');
+        const idx = e.currentTarget.getAttribute('data-idx');
         trackerData.splice(idx, 1);
         saveData();
         renderTracker();
+      });
+    });
+    document.querySelectorAll('.research-asset-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sym = e.currentTarget.getAttribute('data-sym');
+        // Lazy-init screener DB if user hasn't visited that tab yet
+        if ((!window.SCREENER_DB || window.SCREENER_DB.length === 0) && typeof buildScreenerDB === 'function') {
+          window.SCREENER_DB = buildScreenerDB();
+        }
+        if (window.SCREENER_DB && window.SCREENER_DB.find(s => s.sym === sym)) {
+          openResearch(sym);
+        } else {
+          window.open('https://www.screener.in/company/' + sym + '/', '_blank');
+        }
       });
     });
   }
@@ -2904,29 +2960,54 @@ function initTrackerModule() {
     }
   }
 
-  addBtn.addEventListener('click', () => {
-    const ticker = tickerInput.value.trim().toUpperCase();
-    const type = typeSelect.value;
-    if (!ticker) return;
-
+  function addTicker(ticker, type) {
+    ticker = (ticker || '').trim().toUpperCase().replace(/\.NS$|\.BO$/, '');
+    if (!ticker) { showMsg('Enter a symbol.', false); return false; }
     if (trackerData.some(a => a.ticker === ticker)) {
-      alert(ticker + ' is already being tracked.');
-      return;
+      showMsg(ticker + ' is already being tracked.', false);
+      return false;
     }
-
-    const initialPrice = type === 'MF' ? (Math.random() * 100 + 50) : (Math.random() * 2000 + 100);
-
+    let name = ticker;
+    let initialPrice = null;
+    if (type === 'STOCK' && typeof MARKET_DIRECTORY !== 'undefined') {
+      const match = MARKET_DIRECTORY.find(s => s.sym === ticker);
+      if (!match) {
+        showMsg(ticker + ' not found in NIFTY 500. Check the symbol or pick from suggestions.', false);
+        return false;
+      }
+      name = match.name;
+      initialPrice = match.price;
+    } else if (type === 'MF') {
+      // Mutual fund: lookup in TOP_FUNDS_DB if present, otherwise allow with a default NAV
+      const mfMatch = (window.TOP_FUNDS_DB || []).find(f => (f.symbol || f.name || '').toUpperCase().includes(ticker));
+      initialPrice = mfMatch ? (mfMatch.nav || mfMatch.price || 100) : (Math.random() * 100 + 50);
+      if (mfMatch) name = mfMatch.name || ticker;
+    }
     trackerData.push({
       ticker,
+      name,
       type,
-      history: [
-        { date: new Date().toISOString(), price: initialPrice }
-      ]
+      history: seedHistory(initialPrice, type)
     });
-
-    tickerInput.value = '';
     saveData();
     renderTracker();
+    showMsg('✓ ' + ticker + ' added at ₹' + initialPrice.toFixed(2), true);
+    return true;
+  }
+
+  // Expose for cross-module use (research modal "Add to Tracker" button)
+  window.dexterAddToTracker = addTicker;
+
+  addBtn.addEventListener('click', () => {
+    const ok = addTicker(tickerInput.value, typeSelect.value);
+    if (ok) tickerInput.value = '';
+  });
+
+  tickerInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const ok = addTicker(tickerInput.value, typeSelect.value);
+      if (ok) tickerInput.value = '';
+    }
   });
 
   snapshotBtn.addEventListener('click', async () => {
@@ -2941,7 +3022,7 @@ function initTrackerModule() {
 
       history.push({
         date: new Date().toISOString(),
-        price: newPrice
+        price: +newPrice.toFixed(2)
       });
 
       if (history.length > 30) {
@@ -2954,11 +3035,15 @@ function initTrackerModule() {
 
     snapshotBtn.style.backgroundColor = '#00D4FF';
     setTimeout(() => { snapshotBtn.style.backgroundColor = 'var(--amber)'; }, 300);
+    showMsg('✓ Snapshot saved for ' + trackerData.length + ' asset(s).', true);
   });
 
   document.getElementById('tab-tracker')?.addEventListener('click', () => {
     renderTracker();
   });
+
+  // Initial render
+  renderTracker();
 }
 
 // ==========================================
