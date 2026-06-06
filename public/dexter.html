@@ -1127,13 +1127,15 @@
         <div class="card" style="flex: 1;">
           <div class="card-label">ADD ASSET</div>
           <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
-            <input type="text" id="tracker-ticker" placeholder="Ticker (e.g., RELIANCE.NS)" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-dark); color: white;">
+            <input type="text" id="tracker-ticker" list="tracker-ticker-list" placeholder="Type symbol (e.g., RELIANCE, INFY, TCS)..." autocomplete="off" style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-dark); color: white;">
+            <datalist id="tracker-ticker-list"></datalist>
             <select id="tracker-type" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-dark); color: white;">
               <option value="STOCK">Stock</option>
               <option value="MF">Mutual Fund</option>
             </select>
             <button id="tracker-add-btn" style="padding: 8px 16px; border-radius: 4px; background: var(--purple); color: white; border: none; cursor: pointer;">Add to Tracker</button>
           </div>
+          <div id="tracker-add-msg" style="margin-top: 8px; font-size: 12px; color: var(--text-dim); min-height: 16px;"></div>
         </div>
         <!-- Snapshot Controls -->
         <div class="card" style="flex: 1; display: flex; align-items: center; justify-content: center;">
