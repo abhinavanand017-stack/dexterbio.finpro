@@ -3687,57 +3687,109 @@ const STOCKS_DB = [
 
 /* ============== Data Sources & APIs ============== */
 (function initDataSources(){
-  const groups = {
-    'ds-free': [
-      ['NSE India','Official exchange data, index constituents, P/E, P/B','https://www.nseindia.com'],
-      ['BSE India','Quarterly results, annual reports, shareholding patterns','https://www.bseindia.com'],
-      ['Screener.in','10 years of P&L, balance sheet, cash flow — free export','https://www.screener.in'],
-      ['Tickertape','Fundamental scores, 200+ filter screener','https://www.tickertape.in'],
-      ['Trendlyne','DVM scores, promoter pledging, analyst consensus','https://www.trendlyne.com'],
-      ['Moneycontrol','Peer comparisons, broker research, news sentiment','https://www.moneycontrol.com'],
-      ['Groww','Retail-friendly fundamentals, MF data','https://www.groww.in'],
-      ['Tijori Finance','Detailed segment-level financials, NSE/BSE','https://www.tijorifinance.com'],
-      ['StockAnalysis.in','Free fundamental screener, export-ready','https://stockanalysis.in/stocks']
-    ],
-    'ds-broker': [
-      ['Zerodha Kite Connect','REST + WebSocket, real-time quotes, order execution','https://kite.trade'],
-      ['Kite Developer Docs','Full API documentation v3','https://kite.trade/docs/connect/v3'],
-      ['Kite Developer Portal','Create your app, get API keys','https://developers.kite.trade'],
-      ['Angel One SmartAPI','Free API, NSE/BSE real-time + historical','https://smartapi.angelbroking.com'],
-      ['Upstox API','Alternative broker API, good WebSocket support','https://upstox.com/developer/api-documentation']
-    ],
-    'ds-paid': [
-      ['Trendlyne API','Fundamentals, forecasts, DVM scores (~₹2000/mo)','https://trendlyne.com/developers/api'],
-      ['Wisesheets','Fundamentals in Excel/Google Sheets (~$10/mo)','https://www.wisesheets.io'],
-      ['Wisesheets Database API','API-ready fundamentals for screeners & apps','https://www.wisesheets.io/database'],
-      ['Refinitiv (LSEG) Eikon','Institutional-grade, full financials globally','https://www.refinitiv.com/en/products/eikon-trading-software'],
-      ['Bloomberg Terminal','Gold standard, university terminals free','https://professional.bloomberg.com/products/bloomberg-terminal'],
-      ['Global Datafeeds','Authorized NSE/BSE real-time API vendor','https://globaldatafeeds.in/apis'],
-      ['TrueData','Low-latency NSE/BSE market data API','https://www.truedata.in/products/marketdataapi']
-    ],
-    'ds-oss': [
-      ['NSEpy (PyPI)','Python library for NSE historical data','https://pypi.org/project/nsetools'],
-      ['PNSEA (PyPI)','Python NSE API — options, insider trades, equity','https://pypi.org/project/pnsea'],
-      ['stock-nse-india','GraphQL/REST API server for NSE data','https://github.com/hi-imcodeman/stock-nse-india'],
-      ['jugaad-trader','Unofficial NSE/BSE data scraper, Python','https://github.com/jugaad-py/jugaad-trader']
-    ],
-    'ds-overlay': [
-      ['SEC EDGAR (13-F)','Institutional holdings data for mimicry layer','https://efts.sec.gov/LATEST/search-index?q=%2213F%22&dateRange=custom'],
-      ['BSE Corporate Filings','Indian institutional disclosure equivalent','https://www.bseindia.com/corporates/ann.html'],
-      ['NSE Bulk/Block Deals','Tracks large institutional trade activity','https://www.nseindia.com/market-data/bulk-deal'],
-      ['Finviz (global macro)','Global sector heatmaps, thematic filters','https://finviz.com/screener.ashx'],
-      ['Pulse by Zerodha','News sentiment for Indian markets','https://pulse.zerodha.com']
-    ]
-  };
   const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return ''; } };
-  Object.entries(groups).forEach(([id, items]) => {
-    const el = document.getElementById(id);
+
+  const items = [
+    // free
+    {cat:'free', name:'NSE India', desc:'Official exchange data, index constituents, P/E, P/B', url:'https://www.nseindia.com'},
+    {cat:'free', name:'BSE India', desc:'Quarterly results, annual reports, shareholding patterns', url:'https://www.bseindia.com'},
+    {cat:'free', name:'Screener.in', desc:'10 years of P&L, balance sheet, cash flow — free export', url:'https://www.screener.in'},
+    {cat:'free', name:'Tickertape', desc:'Fundamental scores, 200+ filter screener', url:'https://www.tickertape.in'},
+    {cat:'free', name:'Trendlyne', desc:'DVM scores, promoter pledging, analyst consensus', url:'https://www.trendlyne.com'},
+    {cat:'free', name:'Moneycontrol', desc:'Peer comparisons, broker research, news sentiment', url:'https://www.moneycontrol.com'},
+    {cat:'free', name:'Groww', desc:'Retail-friendly fundamentals, MF data', url:'https://www.groww.in'},
+    {cat:'free', name:'Tijori Finance', desc:'Detailed segment-level financials, NSE/BSE', url:'https://www.tijorifinance.com'},
+    {cat:'free', name:'StockAnalysis.in', desc:'Free fundamental screener, export-ready', url:'https://stockanalysis.in/stocks'},
+    // broker
+    {cat:'broker', name:'Zerodha Kite Connect', desc:'REST + WebSocket, real-time quotes, order execution', url:'https://kite.trade'},
+    {cat:'broker', name:'Kite Developer Docs', desc:'Full API documentation v3', url:'https://kite.trade/docs/connect/v3'},
+    {cat:'broker', name:'Kite Developer Portal', desc:'Create your app, get API keys', url:'https://developers.kite.trade'},
+    {cat:'broker', name:'Angel One SmartAPI', desc:'Free API, NSE/BSE real-time + historical', url:'https://smartapi.angelbroking.com'},
+    {cat:'broker', name:'Upstox API', desc:'Alternative broker API, good WebSocket support', url:'https://upstox.com/developer/api-documentation'},
+    // paid
+    {cat:'paid', name:'Trendlyne API', desc:'Fundamentals, forecasts, DVM scores (~₹2000/mo)', url:'https://trendlyne.com/developers/api'},
+    {cat:'paid', name:'Wisesheets', desc:'Fundamentals in Excel/Google Sheets (~$10/mo)', url:'https://www.wisesheets.io'},
+    {cat:'paid', name:'Wisesheets Database API', desc:'API-ready fundamentals for screeners & apps', url:'https://www.wisesheets.io/database'},
+    {cat:'paid', name:'Refinitiv (LSEG) Eikon', desc:'Institutional-grade, full financials globally', url:'https://www.refinitiv.com/en/products/eikon-trading-software'},
+    {cat:'paid', name:'Bloomberg Terminal', desc:'Gold standard, university terminals free', url:'https://professional.bloomberg.com/products/bloomberg-terminal'},
+    {cat:'paid', name:'Global Datafeeds', desc:'Authorized NSE/BSE real-time API vendor', url:'https://globaldatafeeds.in/apis'},
+    {cat:'paid', name:'TrueData', desc:'Low-latency NSE/BSE market data API', url:'https://www.truedata.in/products/marketdataapi'},
+    // oss
+    {cat:'oss', name:'NSEpy (PyPI)', desc:'Python library for NSE historical data', url:'https://pypi.org/project/nsetools'},
+    {cat:'oss', name:'PNSEA (PyPI)', desc:'Python NSE API — options, insider trades, equity', url:'https://pypi.org/project/pnsea'},
+    {cat:'oss', name:'stock-nse-india', desc:'GraphQL/REST API server for NSE data', url:'https://github.com/hi-imcodeman/stock-nse-india'},
+    {cat:'oss', name:'jugaad-trader', desc:'Unofficial NSE/BSE data scraper, Python', url:'https://github.com/jugaad-py/jugaad-trader'},
+    // overlay
+    {cat:'overlay', name:'SEC EDGAR (13-F)', desc:'Institutional holdings data for mimicry layer', url:'https://efts.sec.gov/LATEST/search-index?q=%2213F%22&dateRange=custom'},
+    {cat:'overlay', name:'BSE Corporate Filings', desc:'Indian institutional disclosure equivalent', url:'https://www.bseindia.com/corporates/ann.html'},
+    {cat:'overlay', name:'NSE Bulk/Block Deals', desc:'Tracks large institutional trade activity', url:'https://www.nseindia.com/market-data/bulk-deal'},
+    {cat:'overlay', name:'Finviz (global macro)', desc:'Global sector heatmaps, thematic filters', url:'https://finviz.com/screener.ashx'},
+    {cat:'overlay', name:'Pulse by Zerodha', desc:'News sentiment for Indian markets', url:'https://pulse.zerodha.com'}
+  ];
+
+  function cardHtml(it) {
+    return `<a class="ds-card" href="${it.url}" target="_blank" rel="noopener noreferrer" data-cat="${it.cat}">
+      <div class="ds-name">${it.name}</div>
+      <div class="ds-desc">${it.desc}</div>
+      <div class="ds-host">${hostOf(it.url)}</div>
+    </a>`;
+  }
+
+  // initial render into per-category grids
+  const grids = { free: document.getElementById('ds-free'), broker: document.getElementById('ds-broker'), paid: document.getElementById('ds-paid'), oss: document.getElementById('ds-oss'), overlay: document.getElementById('ds-overlay') };
+  Object.entries(grids).forEach(([cat, el]) => {
     if (!el) return;
-    el.innerHTML = items.map(([name, desc, url]) =>
-      `<a class="ds-card" href="${url}" target="_blank" rel="noopener noreferrer">
-        <div class="ds-name">${name}</div>
-        <div class="ds-desc">${desc}</div>
-        <div class="ds-host">${hostOf(url)}</div>
-      </a>`).join('');
+    el.innerHTML = items.filter(i => i.cat === cat).map(cardHtml).join('');
   });
+
+  // state
+  let activeCat = 'all';
+  let query = '';
+
+  function applyFilter() {
+    const q = query.toLowerCase().trim();
+    let visible = 0;
+    Object.entries(grids).forEach(([cat, el]) => {
+      if (!el) return;
+      const cards = el.querySelectorAll('.ds-card');
+      let sectionVisible = 0;
+      cards.forEach(card => {
+        const name = card.querySelector('.ds-name').textContent.toLowerCase();
+        const desc = card.querySelector('.ds-desc').textContent.toLowerCase();
+        const host = card.querySelector('.ds-host').textContent.toLowerCase();
+        const matchText = !q || name.includes(q) || desc.includes(q) || host.includes(q);
+        const matchCat = activeCat === 'all' || activeCat === cat;
+        const show = matchText && matchCat;
+        card.classList.toggle('hidden', !show);
+        if (show) sectionVisible++;
+      });
+      visible += sectionVisible;
+      // show/hide entire section card
+      const section = el.closest('.ds-section');
+      if (section) section.classList.toggle('hidden', sectionVisible === 0);
+    });
+    document.getElementById('ds-count').textContent = visible + ' source' + (visible !== 1 ? 's' : '');
+  }
+
+  // pills
+  document.getElementById('ds-pills').addEventListener('click', (e) => {
+    const pill = e.target.closest('.ds-pill');
+    if (!pill) return;
+    document.querySelectorAll('#ds-pills .ds-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    activeCat = pill.dataset.cat;
+    applyFilter();
+  });
+
+  // search
+  const searchInput = document.getElementById('ds-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      query = e.target.value;
+      applyFilter();
+    });
+  }
+
+  // initial count
+  applyFilter();
 })();

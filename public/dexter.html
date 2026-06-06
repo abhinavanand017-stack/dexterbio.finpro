@@ -1012,32 +1012,47 @@
       </div>
 
       <!-- Data Sources & APIs -->
-      <div style="margin-top: 32px;">
+      <div style="margin-top: 32px;" id="ds-root">
         <h2 style="margin-bottom: 6px;">Data Sources & APIs</h2>
         <p style="color: var(--text-dim); margin: 0 0 20px 0; font-size: 13px;">Curated stack of fundamental data, broker APIs, institutional feeds & open-source tools for the Indian markets.</p>
 
-        <div class="card" style="margin-bottom: 18px;">
+        <div class="ds-toolbar">
+          <div class="ds-search-wrap">
+            <span class="ds-search-icon">🔎</span>
+            <input type="text" id="ds-search" placeholder="Search data sources..." autocomplete="off" />
+          </div>
+          <div class="ds-pills" id="ds-pills">
+            <button class="ds-pill active" data-cat="all">All</button>
+            <button class="ds-pill" data-cat="free">Free</button>
+            <button class="ds-pill" data-cat="broker">Broker</button>
+            <button class="ds-pill" data-cat="paid">Paid</button>
+            <button class="ds-pill" data-cat="oss">Open Source</button>
+            <button class="ds-pill" data-cat="overlay">Overlay</button>
+          </div>
+          <span class="ds-count" id="ds-count">0 sources</span>
+        </div>
+
+        <div class="card ds-section" data-cat="free" style="margin-bottom: 18px;">
           <div class="card-label" style="color: var(--purple); font-size: 1.05em; margin-bottom: 12px;">FREE — INDIAN MARKETS</div>
-          <div class="ds-grid"></div>
           <div class="ds-grid" id="ds-free"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 18px;">
+        <div class="card ds-section" data-cat="broker" style="margin-bottom: 18px;">
           <div class="card-label" style="color: var(--green); font-size: 1.05em; margin-bottom: 12px;">BROKER APIs — EXECUTION + DATA</div>
           <div class="ds-grid" id="ds-broker"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 18px;">
+        <div class="card ds-section" data-cat="paid" style="margin-bottom: 18px;">
           <div class="card-label" style="color: var(--pink); font-size: 1.05em; margin-bottom: 12px;">PAID / INSTITUTIONAL</div>
           <div class="ds-grid" id="ds-paid"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 18px;">
+        <div class="card ds-section" data-cat="oss" style="margin-bottom: 18px;">
           <div class="card-label" style="color: var(--cyan, #00d4ff); font-size: 1.05em; margin-bottom: 12px;">OPEN SOURCE / COMMUNITY</div>
           <div class="ds-grid" id="ds-oss"></div>
         </div>
 
-        <div class="card" style="margin-bottom: 18px;">
+        <div class="card ds-section" data-cat="overlay" style="margin-bottom: 18px;">
           <div class="card-label" style="color: var(--purple); font-size: 1.05em; margin-bottom: 12px;">DEXTER THEMATIC OVERLAY LAYER</div>
           <div class="ds-grid" id="ds-overlay"></div>
         </div>
