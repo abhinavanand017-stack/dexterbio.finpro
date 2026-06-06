@@ -3684,3 +3684,60 @@ const STOCKS_DB = [
   { symbol: 'GALLANTT', category: 'BSE/NSE 500', price: 647, change: -0.16 },
   { symbol: 'CANHLIFE', category: 'BSE/NSE 500', price: 137.5, change: 0.34 }
 ];
+
+/* ============== Data Sources & APIs ============== */
+(function initDataSources(){
+  const groups = {
+    'ds-free': [
+      ['NSE India','Official exchange data, index constituents, P/E, P/B','https://www.nseindia.com'],
+      ['BSE India','Quarterly results, annual reports, shareholding patterns','https://www.bseindia.com'],
+      ['Screener.in','10 years of P&L, balance sheet, cash flow — free export','https://www.screener.in'],
+      ['Tickertape','Fundamental scores, 200+ filter screener','https://www.tickertape.in'],
+      ['Trendlyne','DVM scores, promoter pledging, analyst consensus','https://www.trendlyne.com'],
+      ['Moneycontrol','Peer comparisons, broker research, news sentiment','https://www.moneycontrol.com'],
+      ['Groww','Retail-friendly fundamentals, MF data','https://www.groww.in'],
+      ['Tijori Finance','Detailed segment-level financials, NSE/BSE','https://www.tijorifinance.com'],
+      ['StockAnalysis.in','Free fundamental screener, export-ready','https://stockanalysis.in/stocks']
+    ],
+    'ds-broker': [
+      ['Zerodha Kite Connect','REST + WebSocket, real-time quotes, order execution','https://kite.trade'],
+      ['Kite Developer Docs','Full API documentation v3','https://kite.trade/docs/connect/v3'],
+      ['Kite Developer Portal','Create your app, get API keys','https://developers.kite.trade'],
+      ['Angel One SmartAPI','Free API, NSE/BSE real-time + historical','https://smartapi.angelbroking.com'],
+      ['Upstox API','Alternative broker API, good WebSocket support','https://upstox.com/developer/api-documentation']
+    ],
+    'ds-paid': [
+      ['Trendlyne API','Fundamentals, forecasts, DVM scores (~₹2000/mo)','https://trendlyne.com/developers/api'],
+      ['Wisesheets','Fundamentals in Excel/Google Sheets (~$10/mo)','https://www.wisesheets.io'],
+      ['Wisesheets Database API','API-ready fundamentals for screeners & apps','https://www.wisesheets.io/database'],
+      ['Refinitiv (LSEG) Eikon','Institutional-grade, full financials globally','https://www.refinitiv.com/en/products/eikon-trading-software'],
+      ['Bloomberg Terminal','Gold standard, university terminals free','https://professional.bloomberg.com/products/bloomberg-terminal'],
+      ['Global Datafeeds','Authorized NSE/BSE real-time API vendor','https://globaldatafeeds.in/apis'],
+      ['TrueData','Low-latency NSE/BSE market data API','https://www.truedata.in/products/marketdataapi']
+    ],
+    'ds-oss': [
+      ['NSEpy (PyPI)','Python library for NSE historical data','https://pypi.org/project/nsetools'],
+      ['PNSEA (PyPI)','Python NSE API — options, insider trades, equity','https://pypi.org/project/pnsea'],
+      ['stock-nse-india','GraphQL/REST API server for NSE data','https://github.com/hi-imcodeman/stock-nse-india'],
+      ['jugaad-trader','Unofficial NSE/BSE data scraper, Python','https://github.com/jugaad-py/jugaad-trader']
+    ],
+    'ds-overlay': [
+      ['SEC EDGAR (13-F)','Institutional holdings data for mimicry layer','https://efts.sec.gov/LATEST/search-index?q=%2213F%22&dateRange=custom'],
+      ['BSE Corporate Filings','Indian institutional disclosure equivalent','https://www.bseindia.com/corporates/ann.html'],
+      ['NSE Bulk/Block Deals','Tracks large institutional trade activity','https://www.nseindia.com/market-data/bulk-deal'],
+      ['Finviz (global macro)','Global sector heatmaps, thematic filters','https://finviz.com/screener.ashx'],
+      ['Pulse by Zerodha','News sentiment for Indian markets','https://pulse.zerodha.com']
+    ]
+  };
+  const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return ''; } };
+  Object.entries(groups).forEach(([id, items]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = items.map(([name, desc, url]) =>
+      `<a class="ds-card" href="${url}" target="_blank" rel="noopener noreferrer">
+        <div class="ds-name">${name}</div>
+        <div class="ds-desc">${desc}</div>
+        <div class="ds-host">${hostOf(url)}</div>
+      </a>`).join('');
+  });
+})();
