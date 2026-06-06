@@ -2173,3 +2173,13 @@ body.crisis-panic::after {
     border-bottom: 1px solid var(--border);
   }
 }
+
+/* Data sources grid */
+.ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.ds-card { display: block; padding: 14px 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: var(--text); transition: all .18s ease; }
+.ds-card:hover { background: rgba(124,92,255,0.08); border-color: var(--purple); transform: translateY(-2px); box-shadow: 0 8px 24px -12px rgba(124,92,255,0.4); }
+.ds-card .ds-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ds-card .ds-name::after { content: "↗"; color: var(--text-dim); font-size: 12px; opacity: .6; }
+.ds-card:hover .ds-name::after { color: var(--purple); opacity: 1; }
+.ds-card .ds-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 6px; }
+.ds-card .ds-host { font-size: 11px; color: var(--purple); font-family: ui-monospace, Menlo, monospace; opacity: .8; }
