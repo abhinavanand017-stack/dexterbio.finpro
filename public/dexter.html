@@ -1131,6 +1131,61 @@
     <!-- ======================== DAILY TRACKER TAB ======================== -->
     <div class="tab-panel" id="panel-tracker">
       <h2>Daily Tracker Module</h2>
+      <p style="color: var(--text-dim); margin-top:-6px; margin-bottom: 18px; font-size: 13px;">Live exchange feeds from NSE &amp; BSE, refreshed every market day. Track personal positions alongside official market pulse.</p>
+
+      <!-- ===== Official Exchange Pulse ===== -->
+      <div class="exchange-pulse-grid">
+        <div class="card exchange-card" data-exchange="nse">
+          <div class="exchange-header">
+            <div>
+              <div class="exchange-name">NSE — National Stock Exchange</div>
+              <div class="exchange-sub" id="nse-date">—</div>
+            </div>
+            <a href="https://www.nseindia.com/" target="_blank" rel="noopener noreferrer" class="exchange-open">Open NSE ↗</a>
+          </div>
+          <div class="exchange-metrics" id="nse-metrics"></div>
+          <div class="exchange-frame-wrap">
+            <iframe src="https://www.nseindia.com/" title="NSE Live" class="exchange-frame" loading="lazy" referrerpolicy="no-referrer"></iframe>
+            <div class="exchange-frame-fallback">
+              <div class="ef-fallback-title">NSE blocks embedded preview</div>
+              <div class="ef-fallback-sub">Tap the button below to open the official live terminal in a new tab.</div>
+              <a href="https://www.nseindia.com/" target="_blank" rel="noopener noreferrer" class="ef-fallback-btn">Launch NSE Live ↗</a>
+            </div>
+          </div>
+          <div class="exchange-links">
+            <a href="https://www.nseindia.com/market-data/live-equity-market?symbol=NIFTY%20500" target="_blank" rel="noopener noreferrer">Live Equity</a>
+            <a href="https://www.nseindia.com/market-data/most-active-equities" target="_blank" rel="noopener noreferrer">Most Active</a>
+            <a href="https://www.nseindia.com/market-data/top-gainers-losers" target="_blank" rel="noopener noreferrer">Gainers / Losers</a>
+            <a href="https://www.nseindia.com/companies-listing/corporate-filings-announcements" target="_blank" rel="noopener noreferrer">Corp. Filings</a>
+          </div>
+        </div>
+
+        <div class="card exchange-card" data-exchange="bse">
+          <div class="exchange-header">
+            <div>
+              <div class="exchange-name">BSE — Bombay Stock Exchange</div>
+              <div class="exchange-sub" id="bse-date">—</div>
+            </div>
+            <a href="https://www.bseindia.com/" target="_blank" rel="noopener noreferrer" class="exchange-open">Open BSE ↗</a>
+          </div>
+          <div class="exchange-metrics" id="bse-metrics"></div>
+          <div class="exchange-frame-wrap">
+            <iframe src="https://www.bseindia.com/" title="BSE Live" class="exchange-frame" loading="lazy" referrerpolicy="no-referrer"></iframe>
+            <div class="exchange-frame-fallback">
+              <div class="ef-fallback-title">BSE blocks embedded preview</div>
+              <div class="ef-fallback-sub">Open the official live terminal in a new tab.</div>
+              <a href="https://www.bseindia.com/" target="_blank" rel="noopener noreferrer" class="ef-fallback-btn">Launch BSE Live ↗</a>
+            </div>
+          </div>
+          <div class="exchange-links">
+            <a href="https://www.bseindia.com/markets/equity/EQReports/topgainers.aspx" target="_blank" rel="noopener noreferrer">Top Gainers</a>
+            <a href="https://www.bseindia.com/markets/equity/EQReports/toplosers.aspx" target="_blank" rel="noopener noreferrer">Top Losers</a>
+            <a href="https://www.bseindia.com/corporates/ann.html" target="_blank" rel="noopener noreferrer">Announcements</a>
+            <a href="https://www.bseindia.com/markets/MarketInfo/DispNewNoticesCirculars.aspx" target="_blank" rel="noopener noreferrer">Circulars</a>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-row">
         <!-- Add Asset Form -->
         <div class="card" style="flex: 1;">
