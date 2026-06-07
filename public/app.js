@@ -2670,9 +2670,35 @@ function animateScoreOnLoad() {
   }, 400);
 }
 
+// ─── Nav Scroll ─────────────────────────────────────────────────────
+function initNavScroll() {
+  const navCenter = document.getElementById('nav-center');
+  const leftBtn = document.getElementById('nav-scroll-left');
+  const rightBtn = document.getElementById('nav-scroll-right');
+  if (!navCenter || !leftBtn || !rightBtn) return;
+
+  const scrollStep = 160;
+  function updateVisibility() {
+    const maxScroll = navCenter.scrollWidth - navCenter.clientWidth;
+    leftBtn.classList.toggle('hidden', navCenter.scrollLeft <= 0);
+    rightBtn.classList.toggle('hidden', navCenter.scrollLeft >= maxScroll - 1);
+  }
+
+  leftBtn.addEventListener('click', () => {
+    navCenter.scrollBy({ left: -scrollStep, behavior: 'smooth' });
+  });
+  rightBtn.addEventListener('click', () => {
+    navCenter.scrollBy({ left: scrollStep, behavior: 'smooth' });
+  });
+  navCenter.addEventListener('scroll', updateVisibility);
+  window.addEventListener('resize', updateVisibility);
+  updateVisibility();
+}
+
 // ─── Boot ─────────────────────────────────────────────────────────
 function boot() {
   initTabs();
+  initNavScroll();
   initPnLSparkline();
   initHRVHistory();
   initLambdaHistory();
