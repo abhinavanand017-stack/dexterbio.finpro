@@ -2553,8 +2553,24 @@ function initMarketTabHandlers() {
       btn.classList.add('active');
       State.currentMarketFilter = btn.dataset.index;
       renderMarketScannerTable(State.currentMarketFilter, State.currentMarketSearch);
+      updateIndexSourceLink(State.currentMarketFilter);
     });
   });
+  updateIndexSourceLink(State.currentMarketFilter || 'ALL');
+}
+
+function updateIndexSourceLink(filter) {
+  const link = document.getElementById('idx-src-link');
+  const nameEl = document.getElementById('idx-src-name');
+  if (!link || !nameEl) return;
+  const map = {
+    ALL:    { href: 'https://www.nseindia.com/market-data/live-equity-market?symbol=NIFTY%20500', label: 'NIFTY 500 · NSE Live Equity' },
+    NIFTY:  { href: 'https://www.nseindia.com/index-tracker/NIFTY%2050',                          label: 'NIFTY 50 · NSE Index Tracker' },
+    SENSEX: { href: 'https://www.screener.in/company/1001/?page=1',                                label: 'SENSEX 30 · Screener.in' },
+  };
+  const cfg = map[filter] || map.ALL;
+  link.href = cfg.href;
+  nameEl.textContent = cfg.label;
 }
 
 // ─── Demat Settings Linkage Integration ───────────────────────────
