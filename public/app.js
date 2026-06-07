@@ -2868,6 +2868,7 @@ document.getElementById('tab-forecasting')?.addEventListener('click', () => {
 // DAILY TRACKER MODULE
 // ==========================================
 function initTrackerModule() {
+  initExchangePulse();
   const STORAGE_KEY = 'dexter_daily_tracker';
   let trackerData = [];
   try {
