@@ -211,8 +211,37 @@ body {
   display: flex;
   gap: 4px;
   flex: 1;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 4px;
 }
+.nav-center::-webkit-scrollbar { display: none; }
+
+.nav-scroll-btn {
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  color: var(--cyan);
+  width: 28px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding-bottom: 2px;
+}
+.nav-scroll-btn:hover {
+  background: rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);
+}
+.nav-scroll-btn.hidden { opacity: 0; pointer-events: none; }
 
 .nav-tab {
   background: transparent;
