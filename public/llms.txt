@@ -1,0 +1,9 @@
+# Dexter
+
+> Bio-algorithmic trading dashboard for Indian stock markets — a cognitive firewall between human impulse and capital markets.
+
+Dexter combines biometric signal processing, behavioral ML, and market scanners for NSE and BSE traders. It surfaces fundamental screeners, shadow portfolios, a daily tracker, and a broker gateway in a single dashboard.
+
+## Pages
+
+- [Dexter Dashboard](/): Bio-algorithmic trading dashboard with market scanner, fundamental screener, mutual funds, equity screener, daily tracker, biometric monitoring, and broker gateway.
