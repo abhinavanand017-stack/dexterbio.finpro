@@ -2419,12 +2419,33 @@ function initBacktester() {
 }
 
 // ─── Market Scanner & Watchlists Renderers ───────────────────────
+// Official constituent sets used to filter the market scanner views.
+const NIFTY_50_SYMBOLS = new Set([
+  'ADANIENT','ADANIPORTS','APOLLOHOSP','ASIANPAINT','AXISBANK','BAJAJ-AUTO','BAJAJFINSV','BAJFINANCE',
+  'BEL','BHARTIARTL','CIPLA','COALINDIA','DRREDDY','EICHERMOT','ETERNAL','GRASIM','HCLTECH','HDFCBANK',
+  'HDFCLIFE','HEROMOTOCO','HINDALCO','HINDUNILVR','ICICIBANK','INDUSINDBK','INFY','ITC','JSWSTEEL',
+  'JIOFIN','KOTAKBANK','LT','M&M','MARUTI','NESTLEIND','NTPC','ONGC','POWERGRID','RELIANCE','SBILIFE',
+  'SBIN','SHRIRAMFIN','SUNPHARMA','TATACONSUM','TATAMOTORS','TATASTEEL','TCS','TECHM','TITAN','TRENT',
+  'ULTRACEMCO','WIPRO'
+]);
+const SENSEX_30_SYMBOLS = new Set([
+  'ADANIPORTS','ASIANPAINT','AXISBANK','BAJFINANCE','BAJAJFINSV','BEL','BHARTIARTL','ETERNAL','HCLTECH',
+  'HDFCBANK','HINDUNILVR','ICICIBANK','INFY','ITC','KOTAKBANK','LT','M&M','MARUTI','NESTLEIND','NTPC',
+  'POWERGRID','RELIANCE','SBIN','SUNPHARMA','TATAMOTORS','TATASTEEL','TCS','TECHM','TITAN','ULTRACEMCO'
+]);
+
+function symbolInIndex(sym, filter) {
+  if (filter === 'NIFTY') return NIFTY_50_SYMBOLS.has(sym);
+  if (filter === 'SENSEX') return SENSEX_30_SYMBOLS.has(sym);
+  return true;
+}
+
 function renderMarketScannerTable(filter = 'ALL', search = '') {
   const tbody = document.getElementById('market-tbody');
   if (!tbody) return;
 
   const filtered = MARKET_DIRECTORY.filter(st => {
-    const matchesFilter = filter === 'ALL' || st.idx.includes(filter);
+    const matchesFilter = filter === 'ALL' || symbolInIndex(st.sym, filter);
     const matchesSearch = st.sym.toLowerCase().includes(search.toLowerCase()) || st.name.toLowerCase().includes(search.toLowerCase());
     return matchesFilter && matchesSearch;
   });
@@ -2432,12 +2453,16 @@ function renderMarketScannerTable(filter = 'ALL', search = '') {
   tbody.innerHTML = filtered.map(st => {
     const isWatched = State.myWatchlist.includes(st.sym);
     const bioTradeable = State.arousal < 0.75;
+    const memberships = [];
+    if (NIFTY_50_SYMBOLS.has(st.sym)) memberships.push('NIFTY 50');
+    if (SENSEX_30_SYMBOLS.has(st.sym)) memberships.push('SENSEX 30');
+    const idxLabel = memberships.length ? memberships.join(' · ') : st.idx;
 
     return `
       <tr>
         <td>${st.sym}</td>
         <td>${st.name}</td>
-        <td style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-secondary)">${st.idx}</td>
+        <td style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-secondary)">${idxLabel}</td>
         <td style="font-family:var(--font-mono); font-weight:600">₹${st.price.toFixed(2)}</td>
         <td class="${st.chg >= 0 ? 'positive' : 'negative'}" style="font-family:var(--font-mono)">
           ${st.chg >= 0 ? '+' : ''}${st.chg.toFixed(2)}%
