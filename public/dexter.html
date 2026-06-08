@@ -947,6 +947,24 @@
           </div>
         </div>
       </div>
+
+      <!-- ─── MF Category Forecasting Suite ─── -->
+      <div class="card wide" style="margin-top: 24px; padding: 20px;">
+        <div class="card-header" style="margin-bottom: 14px;">
+          <div>
+            <div class="card-label" style="color: var(--purple);">Mutual Fund Category Forecasting Suite</div>
+            <div class="card-sub">Value Research category data (Jun 2026) · Momentum-MR · Linear trend · Regime scenarios · Sharpe rank · Monte Carlo NAV</div>
+          </div>
+          <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="trigger-btn mfc-tab active" data-model="m1">1 · Momentum/MR</button>
+            <button class="trigger-btn mfc-tab" data-model="m2">2 · Trend Fcst</button>
+            <button class="trigger-btn mfc-tab" data-model="m3">3 · Regime ER</button>
+            <button class="trigger-btn mfc-tab" data-model="m4">4 · Sharpe Rank</button>
+            <button class="trigger-btn mfc-tab" data-model="m5">5 · Monte Carlo</button>
+          </div>
+        </div>
+        <pre id="mfc-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Loading category data…</pre>
+      </div>
     </div>
 
     
@@ -1126,6 +1144,29 @@
             <div class="base-stat"><span>Volatility (σ)</span><strong class="neutral" id="fc-vol">18.5%</strong></div>
           </div>
         </div>
+
+      <!-- ─── Multi-Model Prediction Suite (NIFTY / CNX 500) ─── -->
+      <div class="card wide" style="margin-top: 24px; padding: 20px;">
+        <div class="card-header" style="margin-bottom: 14px;">
+          <div>
+            <div class="card-label" style="color: var(--cyan);">Nifty / CNX-500 Multi-Model Prediction Suite</div>
+            <div class="card-sub">HMM regimes · Gradient-boosted direction classifier · ARIMA+EMA hybrid · Friction-aware backtest</div>
+          </div>
+          <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <select id="mms-dataset" style="background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;">
+              <option value="CNX500_Index">CNX 500 Index</option>
+              <option value="Reliance">Reliance</option>
+              <option value="HDFC_Bank">HDFC Bank</option>
+              <option value="ICICI_Bank">ICICI Bank</option>
+              <option value="Bharti_Airtel">Bharti Airtel</option>
+              <option value="SBI">SBI</option>
+            </select>
+            <button class="trigger-btn" id="mms-run-one" style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.25);">▶ Run Pipeline</button>
+            <button class="trigger-btn" id="mms-run-all" style="background: rgba(124, 92, 255, 0.1); border-color: rgba(124, 92, 255, 0.25);">▶▶ Run All Datasets</button>
+          </div>
+        </div>
+        <pre id="mms-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Select a dataset and click Run Pipeline. Synthetic OHLCV (GBM seeded per stock) is used for offline reproducibility.</pre>
+      </div>
       </div>
     </div>
     <!-- ======================== DAILY TRACKER TAB ======================== -->
@@ -1235,6 +1276,7 @@
   <script src="funds_db.js"></script>
   <script src="stocks_db.js"></script>
   <script src="screener_db.js"></script>
+  <script src="forecast_suite.js"></script>
   <script src="app.js"></script>
 </body>
 
