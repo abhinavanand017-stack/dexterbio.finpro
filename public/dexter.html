@@ -118,6 +118,7 @@
 
   <!-- Top Nav -->
   <nav class="top-nav">
+    <div class="nav-row nav-row-top">
     <div class="nav-brand">
       <div class="brand-logo">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
@@ -138,41 +139,44 @@
       </div>
     </div>
 
-    <button class="nav-scroll-btn" id="nav-scroll-left" aria-label="Scroll tabs left">&#8249;</button>
-    <div class="nav-center" id="nav-center">
-      <button class="nav-tab active" data-tab="dashboard" id="tab-dashboard">Dashboard</button>
-      <button class="nav-tab" data-tab="market" id="tab-market">Market Scanner</button>
-      <button class="nav-tab" data-tab="mutualfunds" id="tab-mutualfunds">Mutual Funds</button>
-      <button class="nav-tab" data-tab="equity" id="tab-equity">Equity Screener</button>
-      <button class="nav-tab" data-tab="fundamentals" id="tab-fundamentals">Fundamental Screener</button>
-      <button class="nav-tab" data-tab="tracker" id="tab-tracker">Daily Tracker</button>
-      <button class="nav-tab" data-tab="forecasting" id="tab-forecasting">Forecasting</button>
-      <button class="nav-tab" data-tab="shadow" id="tab-shadow">Shadow Portfolio</button>
-      <button class="nav-tab" data-tab="behavioral" id="tab-behavioral">Behavioral Log</button>
-      <button class="nav-tab" data-tab="biometric" id="tab-biometric">Biometrics</button>
-      <button class="nav-tab" data-tab="demat" id="tab-demat">Broker Gateway</button>
-    </div>
-    <button class="nav-scroll-btn" id="nav-scroll-right" aria-label="Scroll tabs right">&#8250;</button>
-
     <div class="nav-right">
       <div class="market-status">
         <span class="status-dot pulse"></span>
         <span class="status-text">NSE LIVE</span>
       </div>
-      <div class="biometric-pill" id="biometric-pill">
+      <div class="biometric-pill" id="biometric-pill" aria-label="Heart rate variability and arousal">
         <div class="hrv-icon">♥</div>
         <span id="nav-hrv">72 ms</span>
         <div class="arousal-bar">
           <div class="arousal-fill" id="nav-arousal-fill" style="width:23%"></div>
         </div>
       </div>
-      <button class="trigger-btn pitch-deck-btn" id="pitch-deck-btn">📊 Pitch Mode</button>
-      <button class="trigger-btn" id="trigger-circuit-breaker-btn">⚡ Test Circuit</button>
-      <button class="trigger-btn" id="simulate-cb-btn" style="background:rgba(255,71,87,0.12);border-color:rgba(255,71,87,0.35);color:#ff8a93;">⚡ Simulate Circuit Breaker</button>
-      <label class="demo-toggle" id="demo-toggle" title="Toggle live demo simulation">
+      <button class="trigger-btn pitch-deck-btn" id="pitch-deck-btn" aria-label="Open pitch deck mode">📊 Pitch Mode</button>
+      <button class="trigger-btn" id="trigger-circuit-breaker-btn" aria-label="Test circuit breaker">⚡ Test Circuit</button>
+      <button class="trigger-btn danger-btn" id="simulate-cb-btn" aria-label="Simulate circuit breaker event">⚡ Simulate Breaker</button>
+      <label class="demo-toggle" id="demo-toggle" title="Toggle live demo simulation" aria-label="Toggle live demo">
         <span class="demo-toggle-label">Live Demo</span>
         <span class="demo-toggle-switch"><span class="demo-toggle-knob"></span></span>
       </label>
+    </div>
+    </div>
+
+    <div class="nav-row nav-row-tabs">
+      <button class="nav-scroll-btn" id="nav-scroll-left" aria-label="Scroll tabs left">&#8249;</button>
+      <div class="nav-center" id="nav-center" role="tablist" aria-label="Dashboard sections">
+        <button class="nav-tab active" data-tab="dashboard" id="tab-dashboard" role="tab">Dashboard</button>
+        <button class="nav-tab" data-tab="market" id="tab-market" role="tab">Market Scanner</button>
+        <button class="nav-tab" data-tab="mutualfunds" id="tab-mutualfunds" role="tab">Mutual Funds</button>
+        <button class="nav-tab" data-tab="equity" id="tab-equity" role="tab">Equity Screener</button>
+        <button class="nav-tab" data-tab="fundamentals" id="tab-fundamentals" role="tab">Fundamental Screener</button>
+        <button class="nav-tab" data-tab="tracker" id="tab-tracker" role="tab">Daily Tracker</button>
+        <button class="nav-tab" data-tab="forecasting" id="tab-forecasting" role="tab">Forecasting</button>
+        <button class="nav-tab" data-tab="shadow" id="tab-shadow" role="tab">Shadow Portfolio</button>
+        <button class="nav-tab" data-tab="behavioral" id="tab-behavioral" role="tab">Behavioral Log</button>
+        <button class="nav-tab" data-tab="biometric" id="tab-biometric" role="tab">Biometrics</button>
+        <button class="nav-tab" data-tab="demat" id="tab-demat" role="tab">Broker Gateway</button>
+      </div>
+      <button class="nav-scroll-btn" id="nav-scroll-right" aria-label="Scroll tabs right">&#8250;</button>
     </div>
   </nav>
 
