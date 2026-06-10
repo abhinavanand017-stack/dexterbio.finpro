@@ -958,23 +958,6 @@
         </div>
       </div>
 
-      <!-- ─── MF Category Forecasting Suite ─── -->
-      <div class="card wide" style="margin-top: 24px; padding: 20px;">
-        <div class="card-header" style="margin-bottom: 14px;">
-          <div>
-            <div class="card-label" style="color: var(--purple);">Mutual Fund Category Forecasting Suite</div>
-            <div class="card-sub">Value Research category data (Jun 2026) · Momentum-MR · Linear trend · Regime scenarios · Sharpe rank · Monte Carlo NAV</div>
-          </div>
-          <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="trigger-btn mfc-tab active" data-model="m1">1 · Momentum/MR</button>
-            <button class="trigger-btn mfc-tab" data-model="m2">2 · Trend Fcst</button>
-            <button class="trigger-btn mfc-tab" data-model="m3">3 · Regime ER</button>
-            <button class="trigger-btn mfc-tab" data-model="m4">4 · Sharpe Rank</button>
-            <button class="trigger-btn mfc-tab" data-model="m5">5 · Monte Carlo</button>
-          </div>
-        </div>
-        <pre id="mfc-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Loading category data…</pre>
-      </div>
     </div>
 
     
@@ -1125,22 +1108,81 @@
     <!-- ======================== FORECASTING TAB ======================== -->
     <div class="tab-panel" id="panel-forecasting">
       <div class="panel-header">
-        <h2>Stochastic Growth Forecasting & Prediction</h2>
-        <p>Estimated growth trajectories using mathematical models (GBM, Mean Reversion, Monte Carlo).</p>
+        <h2>Forecasting Lab</h2>
+        <p>World-class multi-model forecasting for Indian equities and mutual funds — 17 stock models, 5 MF models, fully deterministic and offline-reproducible.</p>
       </div>
 
-      <div class="card" style="background: rgba(255, 71, 87, 0.05); border-left: 4px solid var(--pink); padding: 16px; margin-bottom: 24px;">
-        <h4 style="color: var(--pink); margin: 0 0 8px 0;">⚠️ DISCLAIMER</h4>
-        <p style="color: var(--text-dim); margin: 0; font-size: 13px;">These predictions are based strictly on mathematical stochastic models (GBM/Monte Carlo/OU). They do not account for black-swan events, fundamental shifts, or behavioral contamination. Follow them under your own discretion.</p>
+      <div class="fc-subtab-bar">
+        <button class="fc-subtab active" data-sub="stock">📈 Stock Forecasting <span class="fc-sub-count">17 models</span></button>
+        <button class="fc-subtab" data-sub="mf">🏦 Mutual Fund Forecasting <span class="fc-sub-count">5 models</span></button>
       </div>
 
-      <div class="grid-row">
-        <!-- Main Projection Canvas -->
-        <div class="card wide chart-card" style="grid-column: span 3;">
+      <div class="card" style="background: rgba(255, 71, 87, 0.05); border-left: 4px solid var(--pink); padding: 14px; margin: 16px 0 18px;">
+        <h4 style="color: var(--pink); margin: 0 0 6px 0; font-size: 13px;">⚠️ DISCLAIMER</h4>
+        <p style="color: var(--text-dim); margin: 0; font-size: 12px; line-height: 1.55;">Forecasts are produced by deterministic mathematical models on seeded synthetic OHLCV for reproducibility. They are research outputs, not investment advice. Black-swan events, regime breaks, and behavioural contamination are out of scope. Trade at your own discretion.</p>
+      </div>
+
+      <!-- ─── SUB-PANEL · STOCK FORECASTING (17 models) ─── -->
+      <div class="fc-sub-panel active" id="fc-sub-stock">
+        <div class="card wide" style="padding: 20px;">
+          <div class="card-header" style="margin-bottom: 14px;">
+            <div>
+              <div class="card-label" style="color: var(--cyan);">Stock Prediction Suite · 17 Models</div>
+              <div class="card-sub">ARIMA · SARIMA · ETS · OLS · Ridge · RF · GBM · SVR · KNN · LSTM · GRU · Transformer · CNN · Prophet · Ensemble · Monte Carlo · WaveNet</div>
+            </div>
+          </div>
+          <div class="sps-controls">
+            <div class="sps-control">
+              <label>Ticker</label>
+              <select id="sps-ticker"></select>
+            </div>
+            <div class="sps-control">
+              <label>Forecast horizon <span id="sps-days-out" class="sps-days-out">30d</span></label>
+              <input type="range" id="sps-days" min="5" max="180" step="1" value="30"/>
+            </div>
+            <div class="sps-control sps-actions">
+              <button class="trigger-btn" id="sps-sel-all">Select All</button>
+              <button class="trigger-btn" id="sps-sel-none">Clear</button>
+              <button class="trigger-btn primary" id="sps-run">▶ Run Selected</button>
+              <button class="trigger-btn accent" id="sps-run-all">▶▶ Run All 17</button>
+            </div>
+          </div>
+          <div id="sps-model-grid" class="sps-model-grid"></div>
+          <div id="sps-chart-host" class="sps-chart-host">
+            <div class="sps-empty">Select models and click <strong>Run Selected</strong> to render forecasts.</div>
+          </div>
+          <div id="sps-table-host"></div>
+          <pre id="sps-log" class="sps-log"></pre>
+        </div>
+
+        <!-- ─── Multi-Model Prediction Suite (NIFTY / CNX 500) ─── -->
+        <div class="card wide" style="margin-top: 24px; padding: 20px;">
+          <div class="card-header" style="margin-bottom: 14px;">
+            <div>
+              <div class="card-label" style="color: var(--cyan);">Nifty / CNX-500 Multi-Model Pipeline</div>
+              <div class="card-sub">HMM regimes · Gradient-boosted direction classifier · ARIMA+EMA hybrid · Friction-aware backtest</div>
+            </div>
+            <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <select id="mms-dataset" style="background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;">
+                <option value="CNX500_Index">CNX 500 Index</option>
+                <option value="Reliance">Reliance</option>
+                <option value="HDFC_Bank">HDFC Bank</option>
+                <option value="ICICI_Bank">ICICI Bank</option>
+                <option value="Bharti_Airtel">Bharti Airtel</option>
+                <option value="SBI">SBI</option>
+              </select>
+              <button class="trigger-btn" id="mms-run-one" style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.25);">▶ Run Pipeline</button>
+              <button class="trigger-btn" id="mms-run-all" style="background: rgba(124, 92, 255, 0.1); border-color: rgba(124, 92, 255, 0.25);">▶▶ Run All Datasets</button>
+            </div>
+          </div>
+          <pre id="mms-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Select a dataset and click Run Pipeline. Synthetic OHLCV (GBM seeded per stock) is used for offline reproducibility.</pre>
+        </div>
+
+        <div class="card wide chart-card" style="margin-top: 24px;">
           <div class="card-header">
             <div>
               <div class="card-label">Monte Carlo Stochastic Projections (1-Year)</div>
-              <div class="card-sub">Simulating 50 potential price paths using Geometric Brownian Motion</div>
+              <div class="card-sub">50 GBM paths · ₹ expected value / 5-95 percentile band</div>
             </div>
             <div class="chart-tabs">
               <button class="trigger-btn" id="run-monte-carlo-btn" style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.25);">▶ Run Simulation</button>
@@ -1154,29 +1196,26 @@
             <div class="base-stat"><span>Volatility (σ)</span><strong class="neutral" id="fc-vol">18.5%</strong></div>
           </div>
         </div>
-
-      <!-- ─── Multi-Model Prediction Suite (NIFTY / CNX 500) ─── -->
-      <div class="card wide" style="margin-top: 24px; padding: 20px;">
-        <div class="card-header" style="margin-bottom: 14px;">
-          <div>
-            <div class="card-label" style="color: var(--cyan);">Nifty / CNX-500 Multi-Model Prediction Suite</div>
-            <div class="card-sub">HMM regimes · Gradient-boosted direction classifier · ARIMA+EMA hybrid · Friction-aware backtest</div>
-          </div>
-          <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
-            <select id="mms-dataset" style="background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;">
-              <option value="CNX500_Index">CNX 500 Index</option>
-              <option value="Reliance">Reliance</option>
-              <option value="HDFC_Bank">HDFC Bank</option>
-              <option value="ICICI_Bank">ICICI Bank</option>
-              <option value="Bharti_Airtel">Bharti Airtel</option>
-              <option value="SBI">SBI</option>
-            </select>
-            <button class="trigger-btn" id="mms-run-one" style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.25);">▶ Run Pipeline</button>
-            <button class="trigger-btn" id="mms-run-all" style="background: rgba(124, 92, 255, 0.1); border-color: rgba(124, 92, 255, 0.25);">▶▶ Run All Datasets</button>
-          </div>
-        </div>
-        <pre id="mms-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Select a dataset and click Run Pipeline. Synthetic OHLCV (GBM seeded per stock) is used for offline reproducibility.</pre>
       </div>
+
+      <!-- ─── SUB-PANEL · MUTUAL FUND FORECASTING ─── -->
+      <div class="fc-sub-panel" id="fc-sub-mf">
+        <div class="card wide" style="padding: 20px;">
+          <div class="card-header" style="margin-bottom: 14px;">
+            <div>
+              <div class="card-label" style="color: var(--purple);">Mutual Fund Category Forecasting Suite</div>
+              <div class="card-sub">Value Research category data (Jun 2026) · Momentum-MR · Linear trend · Regime scenarios · Sharpe rank · Monte Carlo NAV</div>
+            </div>
+            <div class="chart-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="trigger-btn mfc-tab active" data-model="m1">1 · Momentum/MR</button>
+              <button class="trigger-btn mfc-tab" data-model="m2">2 · Trend Fcst</button>
+              <button class="trigger-btn mfc-tab" data-model="m3">3 · Regime ER</button>
+              <button class="trigger-btn mfc-tab" data-model="m4">4 · Sharpe Rank</button>
+              <button class="trigger-btn mfc-tab" data-model="m5">5 · Monte Carlo</button>
+            </div>
+          </div>
+          <pre id="mfc-output" style="background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); max-height: 540px; overflow: auto; white-space: pre; margin: 0;">Loading category data…</pre>
+        </div>
       </div>
     </div>
     <!-- ======================== DAILY TRACKER TAB ======================== -->
@@ -1287,6 +1326,7 @@
   <script src="stocks_db.js"></script>
   <script src="screener_db.js"></script>
   <script src="forecast_suite.js"></script>
+  <script src="stock_models_suite.js"></script>
   <script src="app.js"></script>
   <script src="addons.js"></script>
 </body>
