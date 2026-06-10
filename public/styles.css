@@ -168,21 +168,40 @@ body {
   top: 0;
   z-index: 100;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0;
-  padding: 0 24px;
-  height: 60px;
-  background: rgba(5, 10, 22, 0.9);
+  padding: 0;
+  background: linear-gradient(180deg, rgba(8,14,28,0.95) 0%, rgba(5,10,22,0.92) 100%);
   backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.45);
+}
+
+.nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  width: 100%;
+}
+.nav-row-top {
+  height: 64px;
+  justify-content: space-between;
+}
+.nav-row-tabs {
+  height: 48px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: rgba(0,0,0,0.18);
+  gap: 6px;
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 220px;
+  min-width: 0;
+  flex-shrink: 1;
 }
 .brand-logo {
   display: flex;
@@ -191,12 +210,17 @@ body {
 }
 .brand-name {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   color: var(--text-primary);
   display: block;
   line-height: 1;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
 }
 .brand-sub {
   font-size: 9px;
@@ -209,25 +233,27 @@ body {
 
 .nav-center {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
   justify-content: flex-start;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding: 0 4px;
+  padding: 6px 4px;
+  mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 .nav-center::-webkit-scrollbar { display: none; }
 
 .nav-scroll-btn {
-  background: rgba(0, 212, 255, 0.08);
-  border: 1px solid rgba(0, 212, 255, 0.18);
+  background: rgba(0, 212, 255, 0.10);
+  border: 1px solid rgba(0, 212, 255, 0.22);
   color: var(--cyan);
-  width: 28px;
+  width: 32px;
   height: 32px;
   border-radius: 8px;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -236,6 +262,12 @@ body {
   transition: all 0.2s;
   flex-shrink: 0;
   padding-bottom: 2px;
+}
+.nav-scroll-btn:focus-visible,
+.nav-tab:focus-visible,
+.trigger-btn:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
 }
 .nav-scroll-btn:hover {
   background: rgba(0, 212, 255, 0.2);
@@ -246,29 +278,50 @@ body {
 .nav-tab {
   background: transparent;
   border: none;
-  color: var(--text-dim);
+  color: var(--text-secondary, #c5cbe0);
   font-family: var(--font-ui);
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 18px;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
 .nav-tab.active {
   color: var(--cyan);
-  background: rgba(0, 212, 255, 0.1);
-  box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.2);
+  background: rgba(0, 212, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.35), 0 0 18px rgba(0,212,255,0.12);
 }
 
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 380px;
+  gap: 10px;
+  flex-shrink: 0;
   justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.trigger-btn.danger-btn {
+  background: rgba(255, 71, 87, 0.14);
+  border-color: rgba(255, 71, 87, 0.4);
+  color: #ff8a93;
+}
+.trigger-btn.danger-btn:hover {
+  background: rgba(255, 71, 87, 0.28);
+  box-shadow: 0 0 12px rgba(255, 71, 87, 0.35);
+}
+
+@media (max-width: 900px) {
+  .brand-name { font-size: 14px; max-width: 38vw; }
+  .brand-sub { display: none; }
+  .nav-row { padding: 0 14px; }
+  .nav-right { gap: 8px; }
+  .trigger-btn { font-size: 10px; padding: 6px 10px; }
 }
 
 .market-status {
