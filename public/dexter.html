@@ -175,6 +175,7 @@
         <button class="nav-tab" data-tab="behavioral" id="tab-behavioral" role="tab">Behavioral Log</button>
         <button class="nav-tab" data-tab="biometric" id="tab-biometric" role="tab">Biometrics</button>
         <button class="nav-tab" data-tab="demat" id="tab-demat" role="tab">Broker Gateway</button>
+        <button class="nav-tab" data-tab="news" id="tab-news" role="tab">Market News</button>
       </div>
       <button class="nav-scroll-btn" id="nav-scroll-right" aria-label="Scroll tabs right">&#8250;</button>
     </div>
@@ -947,7 +948,7 @@
                   <th>FUND NAME</th>
                   <th>RATING</th>
                   <th>NAV (₹)</th>
-                  <th>3Y RETURN</th>
+                  <th id="mf-return-th">3Y RETURN</th>
                 </tr>
               </thead>
               <tbody id="mf-tbody">
@@ -1329,6 +1330,8 @@
   <script src="stock_models_suite.js"></script>
   <script src="app.js"></script>
   <script src="addons.js"></script>
+  <script src="mf_enhanced.js"></script>
+  <script src="news_feed.js"></script>
 </body>
 
 </html>
