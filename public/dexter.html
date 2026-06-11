@@ -175,6 +175,7 @@
         <button class="nav-tab" data-tab="behavioral" id="tab-behavioral" role="tab">Behavioral Log</button>
         <button class="nav-tab" data-tab="biometric" id="tab-biometric" role="tab">Biometrics</button>
         <button class="nav-tab" data-tab="demat" id="tab-demat" role="tab">Broker Gateway</button>
+        <button class="nav-tab" data-tab="news" id="tab-news" role="tab">Market News</button>
       </div>
       <button class="nav-scroll-btn" id="nav-scroll-right" aria-label="Scroll tabs right">&#8250;</button>
     </div>
@@ -947,7 +948,7 @@
                   <th>FUND NAME</th>
                   <th>RATING</th>
                   <th>NAV (₹)</th>
-                  <th>3Y RETURN</th>
+                  <th id="mf-return-th">3Y RETURN</th>
                 </tr>
               </thead>
               <tbody id="mf-tbody">
@@ -1320,6 +1321,25 @@
       </div>
     </div>
 
+    <!-- ======================== MARKET NEWS TAB ======================== -->
+    <div class="tab-panel" id="panel-news">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h2 style="margin:0;">Market News <span style="color:var(--cyan);font-size:14px;font-weight:500;">● LIVE</span></h2>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Real-time feed sourced from Moneycontrol RSS · <span id="news-updated">Loading…</span></div>
+        </div>
+        <button id="news-refresh" style="padding:8px 16px;border-radius:6px;background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.35);color:var(--cyan);cursor:pointer;font-weight:600;">↻ Refresh</button>
+      </div>
+      <div id="news-tabs" style="display:flex;flex-wrap:wrap;gap:6px;margin:18px 0;">
+        <button class="news-tab-btn active" data-idx="0">Markets</button>
+        <button class="news-tab-btn" data-idx="1">Business</button>
+        <button class="news-tab-btn" data-idx="2">Latest</button>
+        <button class="news-tab-btn" data-idx="3">Economy</button>
+        <button class="news-tab-btn" data-idx="4">Mutual Funds</button>
+      </div>
+      <div id="news-list" class="news-grid"></div>
+    </div>
+
   </main>
 
   <script src="funds_db.js"></script>
@@ -1329,6 +1349,8 @@
   <script src="stock_models_suite.js"></script>
   <script src="app.js"></script>
   <script src="addons.js"></script>
+  <script src="mf_enhanced.js"></script>
+  <script src="news_feed.js"></script>
 </body>
 
 </html>
