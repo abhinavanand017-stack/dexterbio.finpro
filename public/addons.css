@@ -250,3 +250,34 @@ main.main-content{padding-bottom:48px!important}
   color:var(--text-secondary); max-height:360px; overflow:auto;
   white-space:pre; margin:16px 0 0;
 }
+
+/* ===== MF Horizon Toggle ===== */
+.mf-horizon-toggle { display:flex; gap:6px; margin:10px 0 14px; }
+.mf-h-btn { padding:6px 14px; border-radius:6px; border:1px solid rgba(0,212,255,0.3);
+  background:transparent; color:#cfd8e4; cursor:pointer; font-size:12px; font-weight:600;
+  letter-spacing:0.05em; transition:all .15s; }
+.mf-h-btn:hover { border-color:var(--cyan); color:#fff; }
+.mf-h-btn.active { background:rgba(0,212,255,0.2); color:#fff; border-color:var(--cyan);
+  box-shadow:inset 0 0 0 1px rgba(0,212,255,0.4); }
+
+/* ===== Market News ===== */
+.news-tab-btn { padding:7px 14px; border-radius:999px; border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.04); color:#cfd8e4; cursor:pointer; font-size:12px;
+  font-weight:600; letter-spacing:.04em; transition:all .15s; }
+.news-tab-btn:hover { border-color:var(--cyan); color:#fff; }
+.news-tab-btn.active { background:linear-gradient(135deg,rgba(0,212,255,0.22),rgba(123,47,190,0.22));
+  border-color:rgba(0,212,255,0.6); color:#fff; }
+.news-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:14px; padding-bottom:32px; }
+.news-card { display:block; padding:16px; border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.015));
+  border:1px solid rgba(255,255,255,0.08); color:#e6edf6; text-decoration:none;
+  transition:transform .15s, border-color .15s, box-shadow .15s; }
+.news-card:hover { transform:translateY(-2px); border-color:rgba(0,212,255,0.45);
+  box-shadow:0 8px 24px rgba(0,212,255,0.08); }
+.news-card h4 { margin:6px 0 8px; font-size:14px; line-height:1.4; color:#fff; }
+.news-card p { margin:0; font-size:12px; color:#9aa6b8; line-height:1.5; }
+.news-meta { font-size:11px; color:#7c8aa0; letter-spacing:.05em; text-transform:uppercase; }
+.news-pulse { color:#22c55e; font-weight:700; margin-right:6px;
+  animation:newsPulse 1.6s ease-in-out infinite; }
+@keyframes newsPulse { 0%,100%{opacity:1;} 50%{opacity:.35;} }
