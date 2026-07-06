@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicMarketQuotesRouteImport } from './routes/api/public/market/quotes'
+import { Route as ApiPublicMarketFinnhubTokenRouteImport } from './routes/api/public/market/finnhub-token'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -28,34 +29,57 @@ const ApiPublicMarketQuotesRoute = ApiPublicMarketQuotesRouteImport.update({
   path: '/api/public/market/quotes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMarketFinnhubTokenRoute =
+  ApiPublicMarketFinnhubTokenRouteImport.update({
+    id: '/api/public/market/finnhub-token',
+    path: '/api/public/market/finnhub-token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/api/public/market/quotes'
+  fullPaths:
+    | '/'
+    | '/sitemap.xml'
+    | '/api/public/market/finnhub-token'
+    | '/api/public/market/quotes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/api/public/market/quotes'
-  id: '__root__' | '/' | '/sitemap.xml' | '/api/public/market/quotes'
+  to:
+    | '/'
+    | '/sitemap.xml'
+    | '/api/public/market/finnhub-token'
+    | '/api/public/market/quotes'
+  id:
+    | '__root__'
+    | '/'
+    | '/sitemap.xml'
+    | '/api/public/market/finnhub-token'
+    | '/api/public/market/quotes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicMarketFinnhubTokenRoute: typeof ApiPublicMarketFinnhubTokenRoute
   ApiPublicMarketQuotesRoute: typeof ApiPublicMarketQuotesRoute
 }
 
@@ -82,12 +106,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMarketQuotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/market/finnhub-token': {
+      id: '/api/public/market/finnhub-token'
+      path: '/api/public/market/finnhub-token'
+      fullPath: '/api/public/market/finnhub-token'
+      preLoaderRoute: typeof ApiPublicMarketFinnhubTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicMarketFinnhubTokenRoute: ApiPublicMarketFinnhubTokenRoute,
   ApiPublicMarketQuotesRoute: ApiPublicMarketQuotesRoute,
 }
 export const routeTree = rootRouteImport
