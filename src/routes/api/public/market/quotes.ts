@@ -162,6 +162,20 @@ export const Route = createFileRoute("/api/public/market/quotes")({
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
       GET: async () => {
         try {
+          // Graceful degradation: if Angel One creds aren't configured,
+          // return an empty quote set with 200 so the client shows OFFLINE
+          // instead of a 502 in the runtime-errors channel.
+          if (
+            !process.env.SMARTAPI_CLIENT_CODE ||
+            !process.env.SMARTAPI_PASSWORD ||
+            !process.env.SMARTAPI_TOTP_SECRET ||
+            !process.env.SMARTAPI_KEY
+          ) {
+            return new Response(
+              JSON.stringify({ status: "unconfigured", quotes: [] }),
+              { headers: { "Content-Type": "application/json", ...CORS } },
+            );
+          }
           // Serve cached data within 10s to survive burst polling
           if (quoteCache && Date.now() - quoteCache.at < 10_000) {
             return new Response(JSON.stringify(quoteCache.body), {
@@ -175,10 +189,10 @@ export const Route = createFileRoute("/api/public/market/quotes")({
           });
         } catch (e) {
           const message = e instanceof Error ? e.message : "unknown";
-          return new Response(JSON.stringify({ error: message }), {
-            status: 502,
-            headers: { "Content-Type": "application/json", ...CORS },
-          });
+          return new Response(
+            JSON.stringify({ status: "error", error: message, quotes: [] }),
+            { status: 200, headers: { "Content-Type": "application/json", ...CORS } },
+          );
         }
       },
     },
