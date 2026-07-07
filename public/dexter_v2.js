@@ -332,9 +332,13 @@
       const tl = $("#v2-replay-timeline");
       const N = series.rows.length;
       const eventDots = series.events.map(e => {
-        const x = e.i / (N - 1) * 100;
+        const x = (e.i / (N - 1)) * 100;
         const color = e.kind === "entry" ? "var(--v2-calm)" : e.kind === "exit" ? "var(--v2-hot)" : "var(--v2-elevated)";
-        return `<circle cx="${x}%" cy="20" r="5" fill="${color}"><title>${esc(e.kind)}</title></circle>`;
+        const label = e.kind[0].toUpperCase() + e.kind.slice(1);
+        return `
+          <div class="v2-evt-marker" title="${esc(label)}" style="left:${x}%;background:${color};">
+            <span class="v2-evt-lbl">${esc(label)}</span>
+          </div>`;
       }).join("");
       tl.innerHTML = `
         <div class="v2-replay-track">
@@ -349,9 +353,9 @@
           <span class="v2-track-label">GSR (µS)</span>
           <svg viewBox="0 0 1000 40" preserveAspectRatio="none"><path d="${toPath(series.rows,"gsr")}" stroke="var(--v2-elevated)" fill="none" stroke-width="1.5"/></svg>
         </div>
-        <div class="v2-replay-track">
+        <div class="v2-replay-track v2-replay-events-row">
           <span class="v2-track-label">Events</span>
-          <svg class="v2-replay-events" viewBox="0 0 100 40" preserveAspectRatio="none">${eventDots}</svg>
+          <div class="v2-replay-events-lane">${eventDots}</div>
         </div>
         <div class="v2-replay-playhead" id="v2-replay-playhead" style="left:${(playhead/(N-1))*100}%;"></div>`;
     }
