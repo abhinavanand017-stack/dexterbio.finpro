@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicMarketYahooQuoteRouteImport } from './routes/api/public/market/yahoo-quote'
 import { Route as ApiPublicMarketQuotesRouteImport } from './routes/api/public/market/quotes'
 import { Route as ApiPublicMarketFinnhubTokenRouteImport } from './routes/api/public/market/finnhub-token'
 
@@ -24,6 +25,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMarketYahooQuoteRoute =
+  ApiPublicMarketYahooQuoteRouteImport.update({
+    id: '/api/public/market/yahoo-quote',
+    path: '/api/public/market/yahoo-quote',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMarketQuotesRoute = ApiPublicMarketQuotesRouteImport.update({
   id: '/api/public/market/quotes',
   path: '/api/public/market/quotes',
@@ -41,12 +48,14 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -54,6 +63,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -62,18 +72,21 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/yahoo-quote'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/yahoo-quote'
   id:
     | '__root__'
     | '/'
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/yahoo-quote'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -81,6 +94,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicMarketFinnhubTokenRoute: typeof ApiPublicMarketFinnhubTokenRoute
   ApiPublicMarketQuotesRoute: typeof ApiPublicMarketQuotesRoute
+  ApiPublicMarketYahooQuoteRoute: typeof ApiPublicMarketYahooQuoteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -97,6 +111,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/market/yahoo-quote': {
+      id: '/api/public/market/yahoo-quote'
+      path: '/api/public/market/yahoo-quote'
+      fullPath: '/api/public/market/yahoo-quote'
+      preLoaderRoute: typeof ApiPublicMarketYahooQuoteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/market/quotes': {
@@ -121,17 +142,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicMarketFinnhubTokenRoute: ApiPublicMarketFinnhubTokenRoute,
   ApiPublicMarketQuotesRoute: ApiPublicMarketQuotesRoute,
+  ApiPublicMarketYahooQuoteRoute: ApiPublicMarketYahooQuoteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
