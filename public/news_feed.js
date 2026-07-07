@@ -1,11 +1,11 @@
-// Live Market News — Moneycontrol RSS via public CORS proxy (allorigins).
+// Live Market News — Moneycontrol RSS via our own server-side proxy.
 (function () {
   const FEEDS = [
-    { label: 'Markets',      url: 'https://www.moneycontrol.com/rss/marketsnews.xml' },
-    { label: 'Business',     url: 'https://www.moneycontrol.com/rss/business.xml' },
-    { label: 'Latest',       url: 'https://www.moneycontrol.com/rss/latestnews.xml' },
-    { label: 'Economy',      url: 'https://www.moneycontrol.com/rss/economy.xml' },
-    { label: 'Mutual Funds', url: 'https://www.moneycontrol.com/rss/mfreports.xml' },
+    { label: 'Markets',      feed: 'markets' },
+    { label: 'Business',     feed: 'business' },
+    { label: 'Latest',       feed: 'latest' },
+    { label: 'Economy',      feed: 'economy' },
+    { label: 'Mutual Funds', feed: 'mf' },
   ];
   let activeFeed = 0;
   let loaded = false;
@@ -16,6 +16,14 @@
     else document.addEventListener('DOMContentLoaded', fn);
   }
   function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  // Only allow safe http(s) links; block javascript:, data:, etc.
+  function safeHref(u) {
+    try {
+      const parsed = new URL(String(u || ''), window.location.origin);
+      if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.href;
+    } catch (_) {}
+    return '#';
+  }
   function timeAgo(d) {
     const t = new Date(d); if (isNaN(t)) return '';
     const s = (Date.now() - t.getTime()) / 1000;
@@ -25,29 +33,19 @@
     return Math.floor(s / 86400) + 'd ago';
   }
 
-  async function fetchFeed(url) {
-    const proxies = [
-      u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
-      u => 'https://corsproxy.io/?' + encodeURIComponent(u),
-    ];
-    let lastErr;
-    for (const p of proxies) {
-      try {
-        const r = await fetch(p(url));
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const txt = await r.text();
-        const xml = new DOMParser().parseFromString(txt, 'text/xml');
-        const items = [...xml.querySelectorAll('item')].slice(0, 24).map(it => ({
-          title: it.querySelector('title')?.textContent || '',
-          link: it.querySelector('link')?.textContent || '#',
-          desc: (it.querySelector('description')?.textContent || '').replace(/<[^>]+>/g, '').slice(0, 200),
-          pub: it.querySelector('pubDate')?.textContent || '',
-        }));
-        if (items.length) return items;
-        throw new Error('Empty feed');
-      } catch (e) { lastErr = e; }
-    }
-    throw lastErr || new Error('All proxies failed');
+  async function fetchFeed(feedKey) {
+    const r = await fetch('/api/public/market/rss?feed=' + encodeURIComponent(feedKey), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const txt = await r.text();
+    const xml = new DOMParser().parseFromString(txt, 'text/xml');
+    const items = [...xml.querySelectorAll('item')].slice(0, 24).map(it => ({
+      title: it.querySelector('title')?.textContent || '',
+      link: safeHref(it.querySelector('link')?.textContent || '#'),
+      desc: (it.querySelector('description')?.textContent || '').replace(/<[^>]+>/g, '').slice(0, 200),
+      pub: it.querySelector('pubDate')?.textContent || '',
+    }));
+    if (!items.length) throw new Error('Empty feed');
+    return items;
   }
 
   async function load() {
@@ -56,7 +54,7 @@
     if (!list) return;
     list.innerHTML = '<div style="grid-column:1/-1;padding:32px;text-align:center;color:var(--text-dim);">Loading live news from Moneycontrol…</div>';
     try {
-      const items = await fetchFeed(FEEDS[activeFeed].url);
+      const items = await fetchFeed(FEEDS[activeFeed].feed);
       list.innerHTML = items.map(it => `
         <a class="news-card" href="${esc(it.link)}" target="_blank" rel="noopener noreferrer">
           <div class="news-meta"><span class="news-pulse">●</span> LIVE · ${esc(timeAgo(it.pub))} · Moneycontrol</div>

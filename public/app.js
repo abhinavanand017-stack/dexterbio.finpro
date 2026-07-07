@@ -1478,67 +1478,35 @@ function updateMarginsDisplay() {
 
 // ─── Yahoo Finance Live Web Quote Gateway ─────────────────────────
 async function fetchWithProxy(yahooUrl) {
-  const proxies = [
-    {
-      name: 'CorsProxy.io',
-      getUrl: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-      parse: (text) => JSON.parse(text)
-    },
-    {
-      name: 'AllOrigins',
-      getUrl: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-      parse: (text) => {
-        const wrapper = JSON.parse(text);
-        return JSON.parse(wrapper.contents);
-      }
-    },
-    {
-      name: 'CodeTabs',
-      getUrl: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-      parse: (text) => JSON.parse(text)
-    }
-  ];
+  // Route through our own server-side proxy so third parties don't see
+  // user queries and can't tamper with responses.
+  try {
+    const u = new URL(yahooUrl);
+    const symbols = u.searchParams.get('symbols') || '';
+    const serverUrl = `/api/public/market/yahoo-quote?symbols=${encodeURIComponent(symbols)}`;
 
-  let lastError = null;
-  for (const proxy of proxies) {
-    const proxyUrl = proxy.getUrl(yahooUrl);
-
-    // Use Promise.race resolving to an object to completely avoid throwing exceptions and debugger pauses
-    const fetchPromise = fetch(proxyUrl).catch(() => ({ isError: true }));
-    const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ isTimeout: true }), 5000));
-
+    const fetchPromise = fetch(serverUrl, { cache: 'no-store' }).catch(() => ({ isError: true }));
+    const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ isTimeout: true }), 8000));
     const res = await Promise.race([fetchPromise, timeoutPromise]);
 
-    if (res.isTimeout) {
-      lastError = 'Timeout after 5000ms';
-      continue;
+    if (res.isTimeout) return { error: 'Timeout after 8000ms' };
+    if (res.isError) return { error: 'Network error' };
+    if (!res.ok) return { error: `HTTP ${res.status}` };
+
+    const data = await res.json();
+    if (!data || !data.quoteResponse || !Array.isArray(data.quoteResponse.result)) {
+      return { error: 'Invalid response structure' };
     }
-
-    if (res.isError) {
-      lastError = 'Network or CORS error';
-      continue;
-    }
-
-    if (!res.ok) {
-      lastError = `HTTP ${res.status}`;
-      continue;
-    }
-
-    try {
-      const text = await res.text();
-      const data = proxy.parse(text);
-
-      if (!data.quoteResponse || !data.quoteResponse.result) {
-        lastError = 'Invalid response structure';
-        continue;
-      }
-
-      return { data, proxyName: proxy.name };
-    } catch (err) {
-      lastError = 'Parse error';
-    }
+    // Basic numeric validation on returned quotes
+    data.quoteResponse.result.forEach((q) => {
+      ['regularMarketPrice', 'regularMarketChangePercent', 'regularMarketChange'].forEach((k) => {
+        if (q[k] != null && (typeof q[k] !== 'number' || !isFinite(q[k]))) q[k] = null;
+      });
+    });
+    return { data, proxyName: 'server' };
+  } catch (err) {
+    return { error: 'Parse error' };
   }
-  return { error: lastError || 'All proxies failed' };
 }
 
 async function refreshLiveMarketFeed() {
@@ -2950,6 +2918,7 @@ function initTrackerModule() {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 32px; color: var(--text-dim); font-size: 13px;">No assets tracked yet. Search for a NIFTY 500 symbol above to begin.</td></tr>';
       return;
     }
+    const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     trackerData.forEach((asset, index) => {
       const history = asset.history || [];
       const currentPrice = history.length > 0 ? history[history.length - 1].price : 0;
@@ -2972,12 +2941,15 @@ function initTrackerModule() {
 
       const sparklineColor = change >= 0 ? '#00D4FF' : '#FF6B35';
 
+      const safeTicker = escHtml(asset.ticker);
+      const safeName = escHtml(asset.name);
+      const safeType = escHtml(asset.type);
       tr.innerHTML = `
         <td>
-          <div style="font-weight: 600;">${asset.ticker}</div>
-          ${asset.name && asset.name !== asset.ticker ? `<div style="font-size:11px;color:var(--text-dim);">${asset.name}</div>` : ''}
+          <div style="font-weight: 600;">${safeTicker}</div>
+          ${asset.name && asset.name !== asset.ticker ? `<div style="font-size:11px;color:var(--text-dim);">${safeName}</div>` : ''}
         </td>
-        <td style="color: var(--text-secondary); font-size: 11px;">${asset.type}</td>
+        <td style="color: var(--text-secondary); font-size: 11px;">${safeType}</td>
         <td style="font-family: var(--font-mono);">₹${currentPrice.toFixed(2)}</td>
         <td class="${change >= 0 ? 'positive' : 'negative'}" style="font-family: var(--font-mono);">
           ${change >= 0 ? '+' : ''}${change.toFixed(2)} (${pctChange.toFixed(2)}%)
@@ -2988,7 +2960,7 @@ function initTrackerModule() {
           </svg>
         </td>
         <td style="white-space:nowrap;">
-          <button class="research-asset-btn" data-sym="${asset.ticker}" title="Open research" style="background: transparent; border: 1px solid var(--border); color: var(--violet-l); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-right: 4px;">🔬</button>
+          <button class="research-asset-btn" data-sym="${safeTicker}" title="Open research" style="background: transparent; border: 1px solid var(--border); color: var(--violet-l); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-right: 4px;">🔬</button>
           <button class="delete-asset-btn" data-idx="${index}" title="Remove" style="background: transparent; border: none; color: #ff4a4a; cursor: pointer; font-size: 14px;">✕</button>
         </td>
       `;
