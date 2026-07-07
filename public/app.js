@@ -2918,6 +2918,7 @@ function initTrackerModule() {
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 32px; color: var(--text-dim); font-size: 13px;">No assets tracked yet. Search for a NIFTY 500 symbol above to begin.</td></tr>';
       return;
     }
+    const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     trackerData.forEach((asset, index) => {
       const history = asset.history || [];
       const currentPrice = history.length > 0 ? history[history.length - 1].price : 0;
@@ -2940,12 +2941,15 @@ function initTrackerModule() {
 
       const sparklineColor = change >= 0 ? '#00D4FF' : '#FF6B35';
 
+      const safeTicker = escHtml(asset.ticker);
+      const safeName = escHtml(asset.name);
+      const safeType = escHtml(asset.type);
       tr.innerHTML = `
         <td>
-          <div style="font-weight: 600;">${asset.ticker}</div>
-          ${asset.name && asset.name !== asset.ticker ? `<div style="font-size:11px;color:var(--text-dim);">${asset.name}</div>` : ''}
+          <div style="font-weight: 600;">${safeTicker}</div>
+          ${asset.name && asset.name !== asset.ticker ? `<div style="font-size:11px;color:var(--text-dim);">${safeName}</div>` : ''}
         </td>
-        <td style="color: var(--text-secondary); font-size: 11px;">${asset.type}</td>
+        <td style="color: var(--text-secondary); font-size: 11px;">${safeType}</td>
         <td style="font-family: var(--font-mono);">₹${currentPrice.toFixed(2)}</td>
         <td class="${change >= 0 ? 'positive' : 'negative'}" style="font-family: var(--font-mono);">
           ${change >= 0 ? '+' : ''}${change.toFixed(2)} (${pctChange.toFixed(2)}%)
@@ -2956,7 +2960,7 @@ function initTrackerModule() {
           </svg>
         </td>
         <td style="white-space:nowrap;">
-          <button class="research-asset-btn" data-sym="${asset.ticker}" title="Open research" style="background: transparent; border: 1px solid var(--border); color: var(--violet-l); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-right: 4px;">🔬</button>
+          <button class="research-asset-btn" data-sym="${safeTicker}" title="Open research" style="background: transparent; border: 1px solid var(--border); color: var(--violet-l); cursor: pointer; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-right: 4px;">🔬</button>
           <button class="delete-asset-btn" data-idx="${index}" title="Remove" style="background: transparent; border: none; color: #ff4a4a; cursor: pointer; font-size: 14px;">✕</button>
         </td>
       `;
