@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicMarketYahooQuoteRouteImport } from './routes/api/public/market/yahoo-quote'
+import { Route as ApiPublicMarketRssRouteImport } from './routes/api/public/market/rss'
 import { Route as ApiPublicMarketQuotesRouteImport } from './routes/api/public/market/quotes'
 import { Route as ApiPublicMarketFinnhubTokenRouteImport } from './routes/api/public/market/finnhub-token'
 
@@ -31,6 +32,11 @@ const ApiPublicMarketYahooQuoteRoute =
     path: '/api/public/market/yahoo-quote',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMarketRssRoute = ApiPublicMarketRssRouteImport.update({
+  id: '/api/public/market/rss',
+  path: '/api/public/market/rss',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMarketQuotesRoute = ApiPublicMarketQuotesRouteImport.update({
   id: '/api/public/market/quotes',
   path: '/api/public/market/quotes',
@@ -48,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/rss': typeof ApiPublicMarketRssRoute
   '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRoutesByTo {
@@ -55,6 +62,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/rss': typeof ApiPublicMarketRssRoute
   '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRoutesById {
@@ -63,6 +71,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/market/finnhub-token': typeof ApiPublicMarketFinnhubTokenRoute
   '/api/public/market/quotes': typeof ApiPublicMarketQuotesRoute
+  '/api/public/market/rss': typeof ApiPublicMarketRssRoute
   '/api/public/market/yahoo-quote': typeof ApiPublicMarketYahooQuoteRoute
 }
 export interface FileRouteTypes {
@@ -72,6 +81,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/rss'
     | '/api/public/market/yahoo-quote'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -79,6 +89,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/rss'
     | '/api/public/market/yahoo-quote'
   id:
     | '__root__'
@@ -86,6 +97,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/public/market/finnhub-token'
     | '/api/public/market/quotes'
+    | '/api/public/market/rss'
     | '/api/public/market/yahoo-quote'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +106,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicMarketFinnhubTokenRoute: typeof ApiPublicMarketFinnhubTokenRoute
   ApiPublicMarketQuotesRoute: typeof ApiPublicMarketQuotesRoute
+  ApiPublicMarketRssRoute: typeof ApiPublicMarketRssRoute
   ApiPublicMarketYahooQuoteRoute: typeof ApiPublicMarketYahooQuoteRoute
 }
 
@@ -120,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMarketYahooQuoteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/market/rss': {
+      id: '/api/public/market/rss'
+      path: '/api/public/market/rss'
+      fullPath: '/api/public/market/rss'
+      preLoaderRoute: typeof ApiPublicMarketRssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/market/quotes': {
       id: '/api/public/market/quotes'
       path: '/api/public/market/quotes'
@@ -142,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicMarketFinnhubTokenRoute: ApiPublicMarketFinnhubTokenRoute,
   ApiPublicMarketQuotesRoute: ApiPublicMarketQuotesRoute,
+  ApiPublicMarketRssRoute: ApiPublicMarketRssRoute,
   ApiPublicMarketYahooQuoteRoute: ApiPublicMarketYahooQuoteRoute,
 }
 export const routeTree = rootRouteImport
