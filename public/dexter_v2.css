@@ -225,6 +225,12 @@ body[data-v2="1"] .card-label {
   pointer-events: none; box-shadow: 0 0 8px var(--v2-accent); }
 .v2-replay-scrub { width: 100%; margin-top: 12px; }
 .v2-replay-events circle { transition: r .18s; }
+.v2-replay-events-row { position: relative; }
+.v2-replay-events-lane { position: absolute; left: 0; right: 0; top: 32px; height: 24px; }
+.v2-evt-marker { position: absolute; top: 6px; width: 12px; height: 12px; border-radius: 50%;
+  transform: translateX(-50%); box-shadow: 0 0 0 3px rgba(10,11,13,0.9), 0 0 10px currentColor; cursor: help; }
+.v2-evt-marker .v2-evt-lbl { position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  font: 600 10px var(--v2-sans); letter-spacing: 0.06em; text-transform: uppercase; color: var(--v2-text-dim); white-space: nowrap; }
 .v2-replay-insight { margin-top: 12px; padding: 12px 14px; border-left: 3px solid var(--v2-elevated);
   background: var(--v2-elevated-bg); border-radius: 6px; font-size: 13px; color: var(--v2-text); }
 .v2-trade-picker { display:flex; gap: 8px; flex-wrap: wrap; }
